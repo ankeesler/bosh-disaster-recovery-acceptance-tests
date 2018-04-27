@@ -1,9 +1,9 @@
 package acceptance_test
 
 import (
-	. "github.com/onsi/ginkgo"
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
 	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/testcases"
+	. "github.com/onsi/ginkgo"
 )
 
 var _ = Describe("backing up bosh", func() {
@@ -11,5 +11,5 @@ var _ = Describe("backing up bosh", func() {
 		testcases.ToyTestcase{},
 	}
 
-	runner.RunBoshDisasterRecoveryAcceptanceTests(testCases)
+	runner.RunBoshDisasterRecoveryAcceptanceTests(config, testCases)
 })

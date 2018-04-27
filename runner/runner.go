@@ -1,11 +1,12 @@
 package runner
 
 import (
-	. "github.com/onsi/ginkgo"
 	"fmt"
+
+	. "github.com/onsi/ginkgo"
 )
 
-func RunBoshDisasterRecoveryAcceptanceTests(testCases []TestCase) {
+func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase) {
 	It("backs up and restores bosh", func() {
 		By("running the before backup step", func() {
 			for _, testCase := range testCases {
@@ -16,6 +17,17 @@ func RunBoshDisasterRecoveryAcceptanceTests(testCases []TestCase) {
 
 		By("backing up", func() {
 			fmt.Println("bbr director backup should run here")
+			RunCommandSuccessfullyWithFailureMessage(
+				"bbr director backup",
+				fmt.Sprintf(
+					"%s director --host %s --username %s --private-key-path %s backup --artifact-path %s",
+					config.BBRBinaryPath,
+					config.BOSH.Hostname,
+					config.BOSH.SSHUsername,
+					config.BOSH.SSHPrivateKeyPath,
+					config.ArtifactPath,
+				),
+			)
 		})
 
 		By("running the after backup step", func() {
