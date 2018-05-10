@@ -13,7 +13,7 @@ func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase)
 		By("running the before backup step", func() {
 			for _, testCase := range testCases {
 				fmt.Println("Running the before backup step for " + testCase.Name())
-				testCase.BeforeBackup()
+				testCase.BeforeBackup(config)
 			}
 		})
 
@@ -34,7 +34,7 @@ func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase)
 		By("running the after backup step", func() {
 			for _, testCase := range testCases {
 				fmt.Println("Running the after backup step for " + testCase.Name())
-				testCase.AfterBackup()
+				testCase.AfterBackup(config)
 			}
 		})
 
@@ -59,7 +59,7 @@ func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase)
 		By("running the after restore step", func() {
 			for _, testCase := range testCases {
 				fmt.Println("Running the after restore step for " + testCase.Name())
-				testCase.AfterRestore()
+				testCase.AfterRestore(config)
 			}
 		})
 	})
@@ -81,7 +81,7 @@ func RunBoshDisasterRecoveryAcceptanceTests(config Config, testCases []TestCase)
 		By("Running cleanup for each testcase", func() {
 			for _, testCase := range testCases {
 				fmt.Println("Running the cleanup step for " + testCase.Name())
-				testCase.Cleanup()
+				testCase.Cleanup(config)
 			}
 		})
 
