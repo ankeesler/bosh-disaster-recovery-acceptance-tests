@@ -1,8 +1,10 @@
 package testcases
 
 import (
+	"fmt"
 	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
 	. "github.com/onsi/gomega"
+	"time"
 )
 
 type TruncateDBBlobstoreTestcase struct{}
@@ -30,6 +32,9 @@ func (t TruncateDBBlobstoreTestcase) BeforeBackup(config Config) {
 		"sudo bash -c",
 		"'for pre in $(ls /var/vcap/jobs/**/bin/pre-start); do $pre; done'",
 	)
+
+	fmt.Println("Sleeping for 20 seconds")
+	time.Sleep(time.Second * 20)
 
 	monitStart(config, "postgres")
 	monitStart(config, "blobstore_nginx")
