@@ -16,7 +16,6 @@ var _ = Describe("backing up bosh", func() {
 	SetDefaultEventuallyTimeout(config.Timeout)
 
 	testCases := []runner.TestCase{
-		testcases.DeploymentTestcase{},
 		testcases.TruncateDBBlobstoreTestcase{},
 	}
 

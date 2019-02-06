@@ -1,11 +1,7 @@
 package testcases
 
 import (
-	"fmt"
-
-	"github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/fixtures"
 	. "github.com/cloudfoundry-incubator/bosh-disaster-recovery-acceptance-tests/runner"
-	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
@@ -16,33 +12,6 @@ func (t TruncateDBBlobstoreTestcase) Name() string {
 }
 
 func (t TruncateDBBlobstoreTestcase) BeforeBackup(config Config) {
-	By("uploading stemcell", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage(
-			"bosh upload stemcell",
-			config,
-			"upload-stemcell",
-			config.StemcellSrc,
-		)
-	})
-
-	By("deploying sdk deployment ", func() {
-		stemcell := getStemcell(config)
-		RunBoshCommandSuccessfullyWithFailureMessage(
-			"bosh deploy sdk",
-			config,
-			"-n",
-			"-d",
-			"sdk-test",
-			"deploy",
-			fmt.Sprintf("--var=vm_type=%s", config.BOSH.CloudConfig.DefaultVMType),
-			fmt.Sprintf("--var=network_name=%s", config.BOSH.CloudConfig.DefaultNetwork),
-			fmt.Sprintf("--var=az_name=%s", config.BOSH.CloudConfig.DefaultAZ),
-			fixtures.Path(fmt.Sprintf("sdk-manifest-%s.yml", stemcell)),
-		)
-	})
-}
-
-func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
 	monitStop(config, "director")
 	monitStop(config, "uaa")
 	monitStop(config, "credhub")
@@ -76,41 +45,18 @@ func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
 		)
 		return session.Wait().ExitCode()
 	}).Should(Equal(0))
+
+	Expect("if we got this far, we've passed").To(Equal(""))
+}
+
+func (t TruncateDBBlobstoreTestcase) AfterBackup(config Config) {
+
 }
 
 func (t TruncateDBBlobstoreTestcase) AfterRestore(config Config) {
-	By("doing cck to bring back instances", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage("bosh cck sdk deployment",
-			config,
-			"-n",
-			"-d",
-			"sdk-test",
-			"cck",
-			"--auto",
-		)
-	})
 
-	By("validate deployment instances are back", func() {
-		session := RunBoshCommandSuccessfullyWithFailureMessage("bosh get sdk instances",
-			config,
-			"-n",
-			"-d",
-			"sdk-test",
-			"instances",
-		)
-		Expect(string(session.Out.Contents())).To(MatchRegexp("database-backuper/[a-z0-9-]+[ \t]+running"))
-	})
 }
 
 func (t TruncateDBBlobstoreTestcase) Cleanup(config Config) {
-	By("deleting sdk deployment ", func() {
-		RunBoshCommandSuccessfullyWithFailureMessage("bosh delete sdk deployment",
-			config,
-			"-n",
-			"-d",
-			"sdk-test",
-			"delete-deployment",
-			"--force",
-		)
-	})
+
 }
